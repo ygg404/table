@@ -541,8 +541,8 @@
         parentnodes: "lrTabs",
         attr: {
             value: "lrTab",
-            iconOn: "ion-ios-home",
-            iconOff: "ion-ios-home-outline",
+            iconOn: "ion-ios-admin",
+            iconOff: "ion-ios-admin-outline",
             innerTabPage: "DefaultPage",
         },
         setValue: setTabValue,
@@ -693,8 +693,8 @@
                     parentnodes: "lrTabs",
                     attr: {
                         value: "lrTab",
-                        iconOn: "ion-ios-home",
-                        iconOff: "ion-ios-home-outline",
+                        iconOn: "ion-ios-admin",
+                        iconOff: "ion-ios-admin-outline",
                         innerTabPage: "DefaultPage",
                     },
                     setValue: setTabValue,

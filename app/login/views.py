@@ -5,3 +5,6 @@ from django.http import JsonResponse,HttpResponse
 def index(request):
     return render(request, "logon/login.html")
 
+"""登录验证"""
+def checklogin(request):
+     return render(request, "logon/login.html")

@@ -201,14 +201,14 @@
         "icon": "<i class='ion ion-ios-more-outline'></i>"
     },
     {
-        "text": "ion-ios-home",
-        "value": "ion-ios-home",
-        "icon": "<i class='ion ion-ios-home'></i>"
+        "text": "ion-ios-admin",
+        "value": "ion-ios-admin",
+        "icon": "<i class='ion ion-ios-admin'></i>"
     },
     {
-        "text": "ion-ios-home-outline",
-        "value": "ion-ios-home-outline",
-        "icon": "<i class='ion ion-ios-home-outline'></i>"
+        "text": "ion-ios-admin-outline",
+        "value": "ion-ios-admin-outline",
+        "icon": "<i class='ion ion-ios-admin-outline'></i>"
     },
     {
         "text": "ion-ios-cloud",
