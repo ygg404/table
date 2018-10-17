@@ -4,8 +4,9 @@ import os
 
 BASE_DIR =os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) )
 SYS_DIR = os.path.join(os.path.join(BASE_DIR,'Conf'),'sys.conf')
+DB_DIR = os.path.join(os.path.join(BASE_DIR,'Conf'),'db.conf')
 
-class Config():
+class Conf():
 	@staticmethod
 	def getSysValue(key):
 		try:
@@ -26,9 +27,17 @@ class Config():
 		except Exception as e:
 			raise e
 
+	@staticmethod
+	def getDbValue(key):
+		try:
+			cf = configparser.ConfigParser()
+			cf.read(DB_DIR , encoding='UTF-8')
+			return cf.get("db", key)
+		except Exception as e:
+			raise e
 
 if __name__ == "__main__":
 	try:
-		print ( Config.setSysValue("SystemToMail" , "false") )
+		print ( Conf.setSysValue("SystemToMail" , "false") )
 	except Exception as e:
 		print (e)
