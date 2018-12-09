@@ -16,7 +16,10 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 
+
 urlpatterns = [
+    url(r'^$', include('app.login.urls',namespace='login')),
     url(r'^login/', include('app.login.urls',namespace='login')),
     url(r'^admin/', include('app.home.urls',namespace='admin')),
+    url(r'^webapi/', include('app.webapi.urls',namespace='webapi')),
 ]

@@ -3,6 +3,7 @@ import UtilTool.Util.Config as Config
 import re
 import os
 import chardet
+import shutil
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -44,6 +45,15 @@ def ModelsText():
     modelsText = execCmd("cd " + BASE_DIR + "&& python manage.py inspectdb ")
     return (modelsText)
 
+#创建app
+def AppCreate(EntityName):
+    execCmd("cd " + BASE_DIR+ "\\Models" + "&& django-admin startapp " + EntityName)
+    shutil.rmtree(BASE_DIR+ "\\Models\\" + EntityName +"\\migrations")
+    os.remove(BASE_DIR+ "\\Models\\" + EntityName +"\\admin.py")
+    os.remove(BASE_DIR+ "\\Models\\" + EntityName +"\\tests.py")
+    os.remove(BASE_DIR+ "\\Models\\" + EntityName +"\\views.py")
+    os.remove(BASE_DIR+ "\\Models\\" + EntityName +"\\__init__.py")
+
 #获取表的注释
 def FieldDes(tablename):
     # 打开数据库连接
@@ -63,6 +73,7 @@ def FieldDes(tablename):
     cursor.close()
     return fieldDes
 
+#创建MODEL 文件
 def ModelCreate(tablename):
     fieldDes = FieldDes(tablename)
     text = ModelsText().split('\n')
@@ -75,13 +86,55 @@ def ModelCreate(tablename):
         if ('\''+tablename.lower() + '\'') in value.lower():
             end = index
     EntityName = text[begin].replace('class ','').replace('(models.Model):','')
-    fp = open(BASE_DIR + '\\Models\\' + EntityName + 'Entity.py' , "w",encoding='utf8')
+    AppCreate(EntityName)
+    fp = open(BASE_DIR + '\\Models\\' + EntityName + '\\models.py' , "w",encoding='utf8')
     fp.write("from django.db import models" +'\n'+'\n')
     fp.write('"""' + GetTableComment(tablename) + '"""\n')
     for i in range(begin,end+1):
         if i-begin != 0 and (i-begin <= len(fieldDes)):
             fp.write('    #'+ fieldDes[i-begin-1] +"\n" )
-        fp.write( text[i].replace("# Field name made lowercase.","") +'\n')
+        text[i] = text[i].replace("# Field name made lowercase.","")
+        #成员名 小写改为大写
+        classObj = re.search("db_column='.+?'", text[i])
+        if classObj != None and classObj != '':
+            className = classObj.group().replace("db_column='","").replace("'","")
+            text[i] = text[i].replace( className.lower() , className )
+        fp.write( text[i] +'\n')
     fp.close()
 
-ModelCreate('base_area')
+#创建 serializer 文件
+def SerializersCreate(tablename):
+    fieldDes = FieldDes(tablename)
+    text = ModelsText().split('\n')
+    EntityName = tablename.replace('_','')
+    begin = 0
+    end = 0
+    for index,value in enumerate(text):
+        if ('class '+ EntityName+'(models.Model)').lower() in value.lower():
+            begin = index
+        if ('\''+tablename.lower() + '\'') in value.lower():
+            end = index
+    EntityName = text[begin].replace('class ','').replace('(models.Model):','')
+    #AppCreate(EntityName)
+    fp = open(BASE_DIR + '\\Models\\' + EntityName + '\\serializer.py' , "w",encoding='utf8')
+    fp.write("from rest_framework import serializers" +'\n')
+    modelName = EntityName + 'Model'
+    fp.write("import Models." + EntityName + ".models as " + modelName + '\n' + '\n')
+    fp.write('"""' + GetTableComment(tablename) + 'Serializer"""\n')
+    for i in range(begin,end+1):
+        if i-begin != 0 and (i-begin <= len(fieldDes)):
+            fp.write('    #'+ fieldDes[i-begin-1] +"\n" )
+        text[i] = text[i].replace("# Field name made lowercase.","").replace('(models.Model)','(serializers.Serializer)')
+        #成员名 小写改为大写
+        classObj = re.search("db_column='.+?'", text[i])
+        if classObj != None and classObj != '':
+            className = classObj.group().replace("db_column='","").replace("'","")
+            text[i] = text[i].replace( className.lower() , className ).replace('models.' , 'serializers.')
+        if 'managed' in text[i]:
+            text[i] = '        ' + 'model = ' + modelName
+        fp.write( text[i] +'\n')
+    fp.close()
+
+if __name__ == "__main__":
+    ModelCreate('base_user')
+    SerializersCreate('base_user')

@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 import configparser
 import os
+import UtilTool.Util.BasePath as BasePath
 
-BASE_DIR =os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) )
-SYS_DIR = os.path.join(os.path.join(BASE_DIR,'Conf'),'sys.conf')
-DB_DIR = os.path.join(os.path.join(BASE_DIR,'Conf'),'db.conf')
+#重写configparser 避免转化为小写
+class MyConfigParser(configparser.ConfigParser):
+    def __init__(self, defaults=None):
+        configparser.ConfigParser.__init__(self, defaults=defaults)
+
+    def optionxform(self, optionstr):
+        return optionstr
 
 class Conf():
 	@staticmethod
 	def getSysValue(key):
 		try:
 			cf = configparser.ConfigParser()
-			cf.read(SYS_DIR , encoding='UTF-8')
+			cf.read(BasePath.SYS_DIR , encoding='UTF-8')
 			return cf.get("sys", key)
 		except Exception as e:
 			raise e
@@ -19,10 +24,10 @@ class Conf():
 	@staticmethod
 	def setSysValue(key ,value):
 		try:
-			cf = configparser.ConfigParser()
-			cf.read(SYS_DIR , encoding='UTF-8')
+			cf = MyConfigParser()
+			cf.read(BasePath.SYS_DIR , encoding='UTF-8')
 			cf.set("sys", key ,value)
-			with open(SYS_DIR, "w") as fw:
+			with open(BasePath.SYS_DIR, "w") as fw:
 				cf.write(fw) # 使用write将修改内容写到文件中，替换原来config文件中内容
 		except Exception as e:
 			raise e
@@ -31,7 +36,7 @@ class Conf():
 	def getDbValue(key):
 		try:
 			cf = configparser.ConfigParser()
-			cf.read(DB_DIR , encoding='UTF-8')
+			cf.read(BasePath.DB_DIR , encoding='UTF-8')
 			return cf.get("db", key)
 		except Exception as e:
 			raise e

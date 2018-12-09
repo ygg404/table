@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="am-form-group">
-                        <button type="button" class="am-btn am-btn-primary  am-btn-block tpl-btn-bg-color-success  tpl-login-btn">登录</button>
+                        <button id="loginBtn" type="button" class="am-btn am-btn-primary  am-btn-block tpl-btn-bg-color-success  tpl-login-btn">登录</button>
                     </div>
                 </form>
             </div>
@@ -36,4 +36,22 @@
     </div>
 
 </body>
+<script>
+    $(function(){
+        $('#loginBtn').click(function(){
+            var username = $.trim($("#username").val());
+            var password = $.trim($("#password").val());
+            $.ajax({
+                url: "/Login/CheckLogin/",
+                data: { username: $.trim(username), password: $.trim(password) },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+
+                }
+            })
+        });
+    });
+</script>
 {% endblock content %}
+

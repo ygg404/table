@@ -103,7 +103,7 @@ dialog.actions = function(options) {
   html.push('<li class="am-modal-actions-header">' + options.title + '</li>');
   options.items.forEach(function(item, index) {
     html.push('<li index="' + index + '">' + item.content + '</li>');
-  });
+  });am-icon-clone
   html.push('</ul>');
   html.push('</div>');
   html.push('<div class="am-modal-actions-group">');
